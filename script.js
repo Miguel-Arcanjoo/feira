@@ -33,7 +33,7 @@ tt.innerHTML=tt.textContent.split(' ').map((w,k)=>`<span aria-hidden="true" styl
 (function(){const c=$('#bg'),x=c.getContext('2d'),finePointer=matchMedia('(hover: hover) and (pointer: fine)').matches,animated=!RM&&finePointer;let W,H,P=[],mx=-999,my=-999,frame=0,last=0;
 function render(t=0){frame=0;if(document.hidden)return;if(animated&&t-last<1000/30){frame=requestAnimationFrame(render);return}last=t;x.clearRect(0,0,W,H);for(const p of P){p.y-=p.v;if(p.y<0){p.y=H;p.x=Math.random()*W}
 if(finePointer){const dx=p.x-mx,dy=p.y-my,d2=dx*dx+dy*dy;if(d2>0&&d2<12100){const push=1.3/Math.sqrt(d2);p.x+=dx*push;p.y+=dy*push}}
-x.fillStyle=`rgba(255,212,0,${p.a})`;x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill()}if(animated)frame=requestAnimationFrame(render)}
+x.fillStyle=`rgba(215,255,50,${p.a})`;x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill()}if(animated)frame=requestAnimationFrame(render)}
 function schedule(){if(animated){if(!frame&&!document.hidden)frame=requestAnimationFrame(render)}else render(performance.now())}
 function size(){W=c.width=innerWidth;H=c.height=innerHeight;P=Array.from({length:Math.min(80,W/16|0)},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+.4,v:Math.random()*.3+.06,a:Math.random()*.45+.1}));last=0;schedule()}
 if(finePointer)addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY},{passive:true});
@@ -48,7 +48,7 @@ document.querySelectorAll('a[href],button:not(:disabled),[tabindex]:not([tabinde
 if(nearest){e.preventDefault();nearest.focus()}});
 
 /* Barra de progresso de rolagem e revelação */
-addEventListener('scroll',()=>{$('#sp').style.width=scrollY/(document.documentElement.scrollHeight-innerHeight)*100+'%'},{passive:true});
+const sp=$('#sp');let tick=0;addEventListener('scroll',()=>{if(tick)return;tick=requestAnimationFrame(()=>{tick=0;sp.style.width=scrollY/(document.documentElement.scrollHeight-innerHeight||1)*100+'%'})},{passive:true});
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
 document.querySelectorAll('.rv').forEach(s=>io.observe(s));
 
@@ -78,7 +78,7 @@ $('#rs').onclick=start;$('#rs').focus()}
 start()})();
 
 /* ===== Jogo de ligar (com linhas e arrastar) ===== */
-(function(){const tabs=$('.tabs'),box=$('#matchBox');let cur=0;const COL=['#ffd400','#ff9f1c','#f4f4f4','#7df9ff'];
+(function(){const tabs=$('.tabs'),box=$('#matchBox');let cur=0;const COL=['#d7ff32','#ff9f1c','#f4f4f4','#7df9ff'];
 tabs.innerHTML=SETS.map((s,k)=>`<button role="tab" aria-selected="${k==0}" data-k="${k}">${s.name}</button>`).join('');
 tabs.onclick=e=>{const b=e.target.closest('button');if(!b)return;cur=+b.dataset.k;tabs.querySelectorAll('button').forEach(x=>x.setAttribute('aria-selected',x===b));G[cur].draw()};
 function Game(set){let R,pr,sl,sr,chk,msg,drag=null;
